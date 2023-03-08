@@ -1,0 +1,15 @@
+{
+  "name": "api-rest-hands-on-course",
+  "version": "1.0.0",
+  "description": "Curso Práctico de consumo de API REST con JS",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "(https://github.com/kgcoro/api-rest-hands-on-course)"
+  },
+  "author": "@kgcoro",
+  "license": "MIT"
+}
