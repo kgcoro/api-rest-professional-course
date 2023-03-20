@@ -36,7 +36,7 @@ async function getCategoriesMoviesPreview() {
     const { data } = await api(`genre/movie/list` );
 
     const categories = data.genres;
-    
+
     categories.forEach(category => {
         const categoriesPreviewContainer = document.querySelector
         ('#categoriesPreview .categoriesPreview-list')
@@ -57,5 +57,3 @@ async function getCategoriesMoviesPreview() {
     });
 }
 
-getTrendingMoviesPreview();
-getCategoriesMoviesPreview();
