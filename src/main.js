@@ -96,3 +96,11 @@ async function getMoviesBySearch(query) {
 
     createMovie(movies, genericSection);
 }
+
+async function getTrendingMovies() {
+    const { data } = await api(`trending/movie/day`);
+
+    const movies = data.results;
+
+    createMovie(movies, genericSection);
+}
