@@ -1,8 +1,7 @@
 searchFormBtn.addEventListener('click', () => location.hash = `#search=${searchFormInput.value}`);
 trendingBtn.addEventListener('click', () => location.hash = '#trends');
 arrowBtn.addEventListener('click', () => {
-    const [sign, hash] = location.hash.split('=');
-    console.log(hash);
+    const [_, hash] = location.hash.split('=');
     (hash) ? history.back() : location.hash = '#home'
 
 });
