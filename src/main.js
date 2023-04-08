@@ -37,9 +37,15 @@ function createMovie(movies, container, lazyLoad = false) {
 
         movieImg.setAttribute('alt', movie.title);
         movieImg.setAttribute(
-            lazyLoad ? 'data-img' : 'src', 
+            lazyLoad ? 'data-img' : 'src',
             `https://image.tmdb.org/t/p/w300${movie.poster_path}`
         );
+        movieImg.addEventListener('error',() => {
+            movieImg.setAttribute(
+                'src', 
+                'https://img.freepik.com/free-vector/oops-404-error-with-broken-robot-concept-illustration_114360-5529.jpg'
+            );
+        });
 
         if (lazyLoad) lazyLoader.observe(movieImg);
 
@@ -100,7 +106,7 @@ async function getMoviesByCategory(id) {
 
     const movies = data.results;
 
-    createMovie(movies, genericSection);
+    createMovie(movies, genericSection, true);
 }
 
 async function getMoviesBySearch(query) {
