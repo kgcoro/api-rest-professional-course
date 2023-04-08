@@ -1,4 +1,10 @@
 searchFormBtn.addEventListener('click', () => location.hash = `#search=${searchFormInput.value}`);
+searchFormInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        document.getElementById('searchBtn').click();
+    }
+});
 trendingBtn.addEventListener('click', () => location.hash = '#trends');
 arrowBtn.addEventListener('click', () => {
     const [_, hash] = location.hash.split('=');
