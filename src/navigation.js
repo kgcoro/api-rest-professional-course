@@ -1,3 +1,7 @@
+let maxPage;
+let page = 1;
+let infiniteScroll;
+
 searchFormBtn.addEventListener('click', () => location.hash = `#search=${searchFormInput.value}`);
 searchFormInput.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
@@ -13,10 +17,16 @@ arrowBtn.addEventListener('click', () => {
 });
 
 window.addEventListener('DOMContentLoaded', navigator, false);
-window.addEventListener('hashchange', navigator);
+window.addEventListener('hashchange', navigator, false);
+window.addEventListener('scroll', infiniteScroll, false);
 
 function navigator() {
     console.log({ location });
+
+    if (infiniteScroll) {
+        window.removeEventListener('scroll', infiniteScroll, { passive: false });
+        infiniteScroll = undefined;
+    }
 
     if (location.hash.startsWith('#trends')) {
         trendsPage();
@@ -32,6 +42,10 @@ function navigator() {
 
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
+
+    if (infiniteScroll) {
+        window.addEventListener('scroll', infiniteScroll, { passive: false });
+    }
 }
 
 function homePage() {
@@ -72,6 +86,8 @@ function searchPage() {
     
     const [_, query] = location.hash.split('=');
     getMoviesBySearch(query.replace("%20", " "));
+
+    infiniteScroll = getPaginatedMoviesBySearch(query.replace("%20", " "));
 }
 
 function categoriesPage() {
@@ -96,6 +112,8 @@ function categoriesPage() {
     headerCategoryTitle.innerHTML = categoryName.replace("%20", " ");
     
     getMoviesByCategory(categoryId);
+
+    infiniteScroll = getPaginatedMoviesByCategory(categoryId);
 }
 
 function movieDetailsPage() {
@@ -137,4 +155,6 @@ function trendsPage() {
     headerCategoryTitle.innerHTML = 'Tendencias';
 
     getTrendingMovies()
+
+    infiniteScroll = getPaginatedTrendingMovies;
 }

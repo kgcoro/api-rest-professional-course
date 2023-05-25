@@ -21,8 +21,16 @@ const lazyLoader = new IntersectionObserver((entries) => {
     });
 });
 
-function createMovie(movies, container, lazyLoad = false) {
-    container.innerHTML = '';
+function createMovie(
+    movies,
+    container,
+    {
+        lazyLoad = false,
+        clean = true
+    } = {}) {
+    if (clean) {
+        container.innerHTML = '';
+    }
 
     movies.forEach(movie => {
 
@@ -40,9 +48,9 @@ function createMovie(movies, container, lazyLoad = false) {
             lazyLoad ? 'data-img' : 'src',
             `https://image.tmdb.org/t/p/w300${movie.poster_path}`
         );
-        movieImg.addEventListener('error',() => {
+        movieImg.addEventListener('error', () => {
             movieImg.setAttribute(
-                'src', 
+                'src',
                 'https://img.freepik.com/free-vector/oops-404-error-with-broken-robot-concept-illustration_114360-5529.jpg'
             );
         });
@@ -105,8 +113,33 @@ async function getMoviesByCategory(id) {
     });
 
     const movies = data.results;
+    maxPage = data.total_pages;
+    console.log(maxPage);
 
-    createMovie(movies, genericSection, true);
+    createMovie(movies, genericSection, { lazyLoad: true, clean: true });
+}
+
+function getPaginatedMoviesByCategory(id) {
+    return async () => {
+        const { scrollTop, scrollHeight, clientHeight, } = document.documentElement;
+
+        const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 45);
+        const pageIsNotMax = page < maxPage;
+
+        if (scrollIsBottom && pageIsNotMax) {
+            page++;
+            const { data } = await api(`discover/movie`, {
+                params: {
+                    with_genres: id,
+                    page,
+                },
+            });
+
+            const movies = data.results;
+
+            createMovie(movies, genericSection, { lazyLoad: true, clean: false });
+        }
+    }
 }
 
 async function getMoviesBySearch(query) {
@@ -117,16 +150,63 @@ async function getMoviesBySearch(query) {
     });
 
     const movies = data.results;
+    maxPage = data.total_pages;
+    console.log(maxPage);
 
-    createMovie(movies, genericSection);
+    createMovie(movies, genericSection, { lazyLoad: true, clean: true });;
+}
+
+function getPaginatedMoviesBySearch(query) {
+    return async () => {
+        const { scrollTop, scrollHeight, clientHeight, } = document.documentElement;
+
+        const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 45);
+        const pageIsNotMax = page < maxPage;
+
+        if (scrollIsBottom && pageIsNotMax) {
+            page++;
+            const { data } = await api(`search/movie`, {
+                params: {
+                    query,
+                    page,
+                },
+            });
+
+            const movies = data.results;
+
+            createMovie(movies, genericSection, { lazyLoad: true, clean: false });
+        }
+    }
 }
 
 async function getTrendingMovies() {
     const { data } = await api(`trending/movie/day`);
 
     const movies = data.results;
+    maxPage = data.total_pages;
 
-    createMovie(movies, genericSection);
+    createMovie(movies, genericSection, { lazyLoad: true, clean: true });
+
+}
+
+async function getPaginatedTrendingMovies() {
+    const { scrollTop, scrollHeight, clientHeight, } = document.documentElement;
+
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 45);
+    const pageIsNotMax = page < maxPage;
+
+    if (scrollIsBottom && pageIsNotMax) {
+        page++;
+        const { data } = await api(`trending/movie/day`, {
+            params: {
+                page,
+            }
+        });
+
+        const movies = data.results;
+
+        createMovie(movies, genericSection, { lazyLoad: true, clean: false });
+    }
 }
 
 async function getMovieById(id) {
